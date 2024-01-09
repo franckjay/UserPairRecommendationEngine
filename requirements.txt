@@ -1,2 +1,3 @@
-sentence-transformers==2.2.0
-tensorflow-ranking
+sentence-transformers==2.2.2
+tensorflow-ranking==0.5.3
+tensorflow-serving-api==2.14.1

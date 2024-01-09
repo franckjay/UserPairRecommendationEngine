@@ -1,2 +1,8 @@
+import json
+import functools
+import logging
+
 if __name__ == '__main__':
-    df = pd.read_csv("data")
+    logging.info("Let's make a Coffee Tasting Model!")
+
+
