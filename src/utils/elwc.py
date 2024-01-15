@@ -11,7 +11,7 @@ import tensorflow as tf
 
 
 from embeddings import build_embeddings
-from users import user_scores
+from users import user_scores, user_age
 from products import product_score, product_description, product_name
 
 
@@ -31,7 +31,9 @@ def to_example(dictionary):
     return tf.train.Example(features=tf.train.Features(feature=dictionary))
 
 
-def construct_elwc(context: dict, examples: list[dict]):
+def construct_elwc(
+    context: dict, examples: list[dict]
+) -> input_pb2.ExampleListWithContext:
     """
     Pass in a Context and Example set, construct an ELWC example.
     :param context: Context for each ranking
@@ -66,7 +68,7 @@ def elwc_to_tfrecords_writer(
     return
 
 
-def construct_map(output):
+def construct_map(output) -> list[input_pb2.ExampleListWithContext]:
     elwc_list = []
     idx = 0
     for items in output:

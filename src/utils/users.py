@@ -1,4 +1,3 @@
-
 # The scores each user assigned to each product id.
 user_scores = {
     "1": {
