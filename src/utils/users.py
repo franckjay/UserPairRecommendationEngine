@@ -1,4 +1,3 @@
-# The scores each user assigned to each product id.
 user_scores = {
     "1": {
         1: 5,
@@ -14,6 +13,9 @@ user_scores = {
         5: 7,
         3: 6,
         6: 2,
+        16: 6,
+        15: 4,
+        14: 8,
     },
     "2": {
         1: 8,
@@ -29,8 +31,8 @@ user_scores = {
         5: 9,
         3: 7,
         6: 5,
+        16: 6,
+        15: 5,
+        14: 8,
     },
 }
-
-# Ages for the two users in the sample
-user_age = {1: 35, 2: 32}
