@@ -1,33 +1,32 @@
 import logging
-from build_and_write_elwc import build_ranking_sets
-from build_model_feature_spec import build_ranking_pipeline
+import torch
+
+from build_and_write_dataloader import build_train_valid_loaders
+from build_model import EmbeddingRankingModel
+from model_trainers import train_sklearn_ranker, train_er_model
 
 
 def main(
-    training_data_path: str,
-    valid_data_path: str,
-    batch_size: int,
-    list_size: int,
-    n_epochs: int,
-    lr: float,
+    batch_size: int, list_size: int, n_epochs: int, lr: float,
 ):
     logging.info("Building the ELWCs")
-    build_ranking_sets()
+    train_dl, valid_dl, train_ds, valid_ds = build_train_valid_loaders(
+        list_size, batch_size
+    )
     logging.info("Constructing the model")
-    constructed_ranker = build_ranking_pipeline(
-        [64, 32],
-        training_data_path,
-        valid_data_path,
-        batch_size,
-        list_size,
-        n_epochs,
-        lr,
+    er = EmbeddingRankingModel(n_docs=list_size, batch_size=batch_size)
+
+    logging.info("Training the Torch model")
+    loss_fn = torch.nn.MSELoss()
+    opt = torch.optim.Adam(er.parameters(), lr=lr, weight_decay=0.2)
+    train_er_model(er, loss_fn, train_dl, valid_dl, opt, n_epochs)
+    logging.info("Job done!")
+
+    logging.info("Training the LogReg model")
+    train_sklearn_ranker(
+        train_ds, valid_ds, train_ds.data_df[["target"]], valid_ds.data_df[["target"]]
     )
-    logging.info("Training the model")
-    constructed_ranker.train_and_validate(verbose=2)
-    logging.info(
-        "Job done! Model should be found in `/tmp/ranking_model_dir/export/latest_model`"
-    )
+    logging.info("Job done!")
 
 
 if __name__ == "__main__":
