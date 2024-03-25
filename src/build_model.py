@@ -69,13 +69,13 @@ class EmbeddingRankingModel(nn.Module):
         :param i_cats: Item index tensor
         :return: Predictions for this batch
         """
-
+        curr_batch_size = len(u_cats)
         # Take User and Item embeddings for each value
         u_embs = self.user_embedding(u_cats.long())
         i_embs = self.item_embedding(i_cats.long())
         # Orient along the correct axis
-        u_embs = u_embs.view(self.batch_size, -1)
-        i_embs = i_embs.view(self.batch_size, -1)
+        u_embs = u_embs.view(curr_batch_size, -1)
+        i_embs = i_embs.view(curr_batch_size, -1)
         # Concat float values and embeddings together
         x = torch.cat([u_embs, i_embs, x], 1)
         return self.layers(x)

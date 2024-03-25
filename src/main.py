@@ -9,7 +9,7 @@ from model_trainers import train_sklearn_ranker, train_er_model
 def main(
     batch_size: int, list_size: int, n_epochs: int, lr: float,
 ):
-    logging.info("Building the ELWCs")
+    logging.info("Building the DataLoaders for ranking")
     train_dl, valid_dl, train_ds, valid_ds = build_train_valid_loaders(
         list_size, batch_size
     )
@@ -32,6 +32,6 @@ def main(
 if __name__ == "__main__":
     # TODO: run argparse here
     logging.info("Let's make a Coffee Tasting Model!")
-    train_df_name, valid_df_name = "coffee_training.tfrecords", "coffee_valid.tfrecords"
+
     n_batch, n_list, epochs, learn_rate = 5, 3, 5, 0.05
-    main(train_df_name, valid_df_name, n_batch, n_list, epochs, learn_rate)
+    main(n_batch, n_list, epochs, learn_rate)

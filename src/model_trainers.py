@@ -105,11 +105,16 @@ def train_sklearn_ranker(
         C=1.0, multi_class="multinomial", max_iter=10000, n_jobs=5
     )
     model.fit(train_ds.float_df[feature_list], train_targ)
-    model.score(valid_ds.float_df[feature_list], valid_targ)
+    logging.info(
+        "Validation score: %s",
+        str(model.score(valid_ds.float_df[feature_list], valid_targ)),
+    )
     train_preds = model.predict_proba(train_ds.float_df[feature_list])
     valid_preds = model.predict_proba(valid_ds.float_df[feature_list])
     logging.info(
-        f"NDCG Scores: Train - {ndcg_score(train_ds[train_ds.targets], train_preds)}"
+        f"NDCG Scores: Train - {ndcg_score(train_ds.data_df[train_ds.targets].values, train_preds)}"
     )
-    logging.info(f"Validation - {ndcg_score(valid_ds[valid_ds.targets], valid_preds)}")
+    logging.info(
+        f"Validation - {ndcg_score(valid_ds.data_df[valid_ds.targets].values, valid_preds)}"
+    )
     return model
