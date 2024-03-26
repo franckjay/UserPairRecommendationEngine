@@ -18,7 +18,7 @@ def main(
 
     logging.info("Training the Torch model")
     loss_fn = torch.nn.MSELoss()
-    opt = torch.optim.Adam(er.parameters(), lr=lr, weight_decay=0.2)
+    opt = torch.optim.Adam(er.parameters(), lr=lr, weight_decay=0.5)
     train_er_model(er, loss_fn, train_dl, valid_dl, opt, n_epochs)
     logging.info("Job done!")
 
@@ -33,5 +33,5 @@ if __name__ == "__main__":
     # TODO: run argparse here
     logging.info("Let's make a Coffee Tasting Model!")
 
-    n_batch, n_list, epochs, learn_rate = 5, 3, 5, 0.05
+    n_batch, n_list, epochs, learn_rate = 5, 3, 5, 0.0003
     main(n_batch, n_list, epochs, learn_rate)

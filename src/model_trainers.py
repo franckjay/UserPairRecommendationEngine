@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 from pandas import DataFrame
+import torch
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import ndcg_score
 import matplotlib.pyplot as plt
@@ -28,13 +29,19 @@ def train_er_model(
     lr_vals = []
     training_losses = []
     valid_losses = []
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    er = er.to(device)
     for epoch in range(n_epochs):
         y_true_train = list()
         y_pred_train = list()
         total_loss_train = 0
 
         for cont, u_cat, i_cat, y in train_loader:
-
+            if device != "cpu":
+              cont = cont.cuda()
+              u_cat = u_cat.cuda()
+              i_cat = i_cat.cuda()
+              y = y.cuda()
             pred = er.forward(cont, u_cat, i_cat)
             loss = loss_fn(pred, y)
 
@@ -58,6 +65,11 @@ def train_er_model(
             y_pred_val = list()
             total_loss_val = 0
             for cont, u_cat, i_cat, y in valid_loader:
+                if device != "cpu":
+                    cont = cont.cuda()
+                    u_cat = u_cat.cuda()
+                    i_cat = i_cat.cuda()
+                    y = y.cuda()
                 pred = er.forward(cont, u_cat, i_cat)
                 loss = loss_fn(pred, y)
 
@@ -102,7 +114,7 @@ def train_sklearn_ranker(
         if (_feat != "target" and "combined" not in _feat)
     ]
     model = LogisticRegression(
-        C=1.0, multi_class="multinomial", max_iter=10000, n_jobs=5
+        C=0.000001, multi_class="multinomial", max_iter=10000, n_jobs=5
     )
     model.fit(train_ds.float_df[feature_list], train_targ)
     logging.info(
